@@ -1,0 +1,28 @@
+import socket
+import json
+import time
+from termios import tcflush, TCIFLUSH
+import sys
+import Adafruit_BBIO.PWM as PWM
+import Adafruit_BBIO.ADC as ADC
+import Adafruit_BBIO.GPIO as GPIO
+
+PWM.cleanup()
+i = 0
+#set pins
+frontright_pin = "P9_14"        #PWM pin  working
+frontleft_pin = "P9_21"         #PWM pin working
+rearright_pin = "P9_42"         #PWM pin        #P9_22 is available PWM still but wasn't working for some reason
+rearleft_pin = "P8_13"          #PWM pin just changed this one
+
+#print "pointa"
+PWM.start(frontright_pin,7.5,50,0)  #frequency of 50Hz results in 20ms period 
+PWM.start(frontleft_pin,7.5,50,0)  #for Talon Motor Controllers pulses should last 1-2ms
+PWM.start(rearright_pin,7.5,50,0)  #which is 5-10% duty cycle (5 = backwards, 7.5 = neutral, 10 = forward)
+PWM.start(rearleft_pin,7.5,50,0)  #figure out which pins are PWM able
+#PWM.start(shooter_pin,7.5,50,0)  #the 7 PWM signals are the 4 wheels, shooter, conveyor, spinner
+#PWM.start(conveyor_pin,7.5,50,0)  #the conveyor is a boolean, either 7.5% or 10% (we will change the value) (easier to make PWM regularly)
+#PWM.start(spinner_pin,10,50,0)  #the spinner is always on full go (may need to adjust the value)
+
+while True:
+    i = i + 1;
