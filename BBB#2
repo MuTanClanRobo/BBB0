@@ -1,0 +1,40 @@
+import socket
+import json
+import time
+from termios import tcflush, TCIFLUSH
+import sys
+import Adafruit_BBIO.PWM as PWM
+import Adafruit_BBIO.ADC as ADC
+import Adafruit_BBIO.GPIO as GPIO
+#set pins
+
+shooter_pin = "P9_14" #PWM pin working
+conveyor_pin = "P9_21" #PWM pin working
+spinner_pin = "P9_42" #PWM pin #P9_22 is available PWM still but wasn't working for some reason
+#rearleft_pin = "P8_13" #PWM pin just changed this one (unused for now)
+
+signal_pin = "P9_27" #GPIO pin used to get commands
+
+#end of pin assignments
+
+PWM.start(shooter_pin,7.5,50,0) #frequency of 50Hz results in 20ms period
+PWM.start(conveyor_pin,7.5,50,0) #for Talon Motor Controllers pulses should last 1-2ms
+PWM.start(spinner_pin,7.5,50,0) #which is 5-10% duty cycle (5 = backwards, 7.5 = neutral, 10 = forward)
+
+
+GPIO.setup(signal_pin, GPIO.IN) #this is the input that lets us know if it is fully compressed
+
+PWM.set_duty_cycle(spinner_pin, 8.5)
+    
+while 1:
+    var = bool (GPIO.input(signal_pin))
+    if var:
+        PWM.set_duty_cycle(conveyor_pin, 8.5)
+        PWM.set_duty_cycle(shooter_pin, 8.5)
+    else:
+        PWM.set_duty_cycle(conveyor_pin, 7.5)
+        PWM.set_duty_cycle(shooter_pin, 7.5)
+
+    
+     
+            
